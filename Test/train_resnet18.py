@@ -29,7 +29,9 @@ model.fc = nn.Linear(
 #--------------------------------------------------------
 
 #デバイス割り当て-------------
-device = torch.device("cpu")
+device = torch.device(
+    "cuda" if torch.cuda.is_available() else "cpu"
+)
 model = model.to(device)
 #---------------------------
 
