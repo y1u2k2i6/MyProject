@@ -120,5 +120,5 @@ test_accuracy = evaluate(
     device
 )
 
-
+print(f"Train Loss : {train_loss:.4f}")
 print(f"Test Accuracy : {test_accuracy:.2f}%")
