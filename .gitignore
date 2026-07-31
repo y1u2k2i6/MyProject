@@ -1,0 +1,15 @@
+# Dataset
+DataSet/CIFAR10/
+
+# PyTorch
+*.pth
+
+# Python
+__pycache__/
+*.pyc
+
+# Results
+Result/
+
+# Figures（必要なら）
+# Figures/
