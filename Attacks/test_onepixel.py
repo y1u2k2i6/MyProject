@@ -4,6 +4,8 @@ import torchvision.models as models
 import torchattacks
 
 from DataSet.cifar10 import get_testloader
+from DataSet.cifar10_attack import get_attackloader
+from Attacks.normalize_model import NormalizeModel
 
 
 # -------------------------
@@ -20,7 +22,7 @@ print("Device:", device)
 # -------------------------
 # CIFAR-10 test data
 # -------------------------
-testloader = get_testloader(
+testloader = get_attackloader(
     batch_size=1
 )
 
@@ -53,8 +55,13 @@ model.load_state_dict(
 )
 
 model = model.to(device)
-
 model.eval()
+
+
+# One Pixel Attack用モデル
+attack_model = NormalizeModel(model)
+attack_model = attack_model.to(device)
+attack_model.eval()
 
 
 print("Model loaded")
@@ -65,7 +72,7 @@ print("Model loaded")
 # -------------------------
 with torch.no_grad():
 
-    output = model(images)
+    output = attack_model(images)
 
     pred = output.argmax(dim=1)
 
@@ -79,10 +86,10 @@ print("Before attack prediction :", pred.item())
 # -------------------------
 
 attack = torchattacks.OnePixel(
-    model,
+    attack_model,
     pixels=1,
-    steps=10,
-    popsize=10
+    steps=50,
+    popsize=20
 )
 
 
@@ -105,7 +112,8 @@ with torch.no_grad():
 
 print("After attack prediction :", adv_pred.item())
 
-
+print(images.min())
+print(images.max())
 if pred.item() != adv_pred.item():
 
     print("Attack Success!")
